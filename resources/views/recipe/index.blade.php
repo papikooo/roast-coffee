@@ -7,18 +7,23 @@
             <a href="#" class="list-group-item list-group-item-action">レシピを探す</a>
             <a href="#" class="list-group-item list-group-item-action">レシピを投稿する</a>
             <a href="#" class="list-group-item list-group-item-action">未定</a>
-            <a href="/profile/{{$user->id}}" class="list-group-item list-group-item-action">マイページ</a>
+            <a href="#" class="list-group-item list-group-item-action">マイページ</a>
         </div>
     </div>
     <div>
-        <h1>Roast Coffee</h1>
-    </div>
-    <img src="/images/coffee-top.jpg"/>
-    <div>
-        <h2>新着レシピ</h2>
+        <h1>レシピ名</h1>
     </div>
     <div>
-        <h2>レシピを探す</h2>
+        <h2>写真</h2>
+    </div>
+    <div>
+        <h4>お気に入り</h4>
+    </div>
+    <div>
+        <h3>レシピ紹介</h3>
+    </div>
+    <div>
+        <h3>豆の種類</h3>
     </div>
 </div>
 @endsection

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 class TopController extends Controller
 {
     public function index() {
-        return view('top/index');
+        $user = auth()->user();
+        return view('top/index', compact('user'));
     }
 }
