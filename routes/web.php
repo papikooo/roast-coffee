@@ -32,6 +32,8 @@ Route::post('/profile/update/{id}', "ProfileController@update");
 
 //レシピ
 Route::get('/recipe', "RecipeController@index");
+Route::get('/recipe/create', "RecipeController@create");
+Route::get('/recipe/detail/{id}', "RecipeController@detail");
 Route::get('/recipe/edit/{id}', "RecipeController@edit");
 Route::post('/recipe/update/{id}', "RecipeController@update");
 Route::get('/recipe/delete/{id}', "RecipeController@delete");

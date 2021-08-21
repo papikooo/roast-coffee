@@ -2,14 +2,8 @@
 
 @section('content')
 <div class="container">
-    <div class="col-3 float-right"> 
-        <div class="list-group text-center font-weight-bold" style="font-size: 18px">
-            <a href="#" class="list-group-item list-group-item-action">レシピを探す</a>
-            <a href="#" class="list-group-item list-group-item-action">レシピを投稿する</a>
-            <a href="#" class="list-group-item list-group-item-action">未定</a>
-            <a href="#" class="list-group-item list-group-item-action">マイページ</a>
-        </div>
-    </div>
+    @include('layouts.sidebar')
+    
     <div>
         <h1>ユーザー名：{{$user->name}}</h1>
     </div>
@@ -20,7 +14,8 @@
         <h4>お気に入り</h4>
     </div>
     <div>
-        <h3>自己紹介{{$profile->introduction}}</h3>
+        <h3>自己紹介<br>
+        {{$profile->introduction}}</h3>
     </div>
     <a href="/profile/edit/{{$user->id}}">
         <input type="submit" value="編集する" class="btn btn-primary">

@@ -5,39 +5,47 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\User;
 use App\Profile;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
     public function index($id) {
-        $users = User::get();
-        $profiles = Profile::get();
-        
         $user =  User::where('id','=', $id)->first();
+        $profile = Profile::where('user_id','=',$id)->first();
         
-        return view('profile/index', compact('profiles','user'));
+        return view('profile/index', compact('profile','user'));
     }
     
-    public function edit($id) {
-        $users = User::get();
-        $profiles = Profile::get();
-        
+    public function edit() {
+        $id = auth()->id();
         $user =  User::where('id','=', $id)->first();
         $profile = Profile::where('user_id','=',$id)->first();
         
         return view('profile/edit', compact('profile','user'));
     }
     
-    // public function update($id, Request $request) {
-    //     $name = $request->name;
-    //     $email = $request->email;
-    //     $introduction = $request->introduction;
+    public function update(Request $request) {
+        $id = auth()->id();
         
-    //     $profile = Profile::where('id', '=', $id)->first();
-    //     $profile->name = $name;
-    //     $profile->email = $email;
-    //     $profile->introduction = $introduction;
-    //     $profile->save();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' =>['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
+            'introduction' => 'max:500'
+        ]);
         
-    //     return redirect('/profile');
-    // }
+        $name = $request->name;
+        $email = $request->email;
+        $introduction = $request->introduction;
+        
+        $user =  User::where('id','=', $id)->first();
+        $profile = Profile::where('user_id', '=', $id)->first();
+        
+        $user->name = $name;
+        $user->email = $email;
+        $profile->introduction = $introduction;
+        $user->save();
+        $profile->save();
+        
+        return redirect("/profile/$id");
+    }
 }
