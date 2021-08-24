@@ -16,4 +16,8 @@ class RecipeController extends Controller
     public function create() {
         return view('recipe/create');
     }
+    
+    public function ok() {
+        return view('recipe/create/ok');
+    }
 }
