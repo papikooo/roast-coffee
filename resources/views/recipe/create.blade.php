@@ -3,10 +3,6 @@
 @section('content')
 
 <div class="container">
-    @include('layouts.sidebar')
-</div>
-
-<div class="container">
     
     @if ($errors->any())
     <div class="alert alert-danger">
@@ -15,10 +11,10 @@
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
-    </div> 
+    </div>
     @endif
     
-    <form action="/recipe/create/ok" method="post">
+    <form action="/recipe/store" method="post">
         @csrf
         <h3>レシピ基本内容</h3>
         <div class="form-group">
@@ -39,15 +35,15 @@
         <div>
             <h3>豆の種類</h3>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="kilimanjaro">
+                <input class="form-check-input" type="checkbox" name="beans[0]" value="キリマンジャロ" id="kilimanjaro">
                 <label class="form-check-label" for="kilimanjaro">キリマンジャロ</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="mocha">
+                <input class="form-check-input" type="checkbox" name="beans[1]" value="モカ" id="mocha">
                 <label class="form-check-label" for="mohca">モカ</label>
             </div>
             <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="mandheling">
+                <input class="form-check-input" type="checkbox" name="beans[2]" value="マンデリン" id="mandheling">
                 <label class="form-check-label" for="mandheling">マンデリン</label>
             </div>
         </div>
@@ -96,5 +92,4 @@
         <input type="submit" value="登録する" class="btn btn-primary">
     </form>
 </div>
-
 @endsection

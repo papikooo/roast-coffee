@@ -8,7 +8,6 @@
     <div>
         <img src="/images/coffee-top.jpg" height="auto" width="100%"/>
     </div>
-    @include('layouts.sidebar')
     <div>
         <h2>新着レシピ</h2>
     </div>

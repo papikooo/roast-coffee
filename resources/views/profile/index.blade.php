@@ -2,8 +2,6 @@
 
 @section('content')
 <div class="container">
-    @include('layouts.sidebar')
-    
     <div>
         <h1>ユーザー名：{{$user->name}}</h1>
     </div>

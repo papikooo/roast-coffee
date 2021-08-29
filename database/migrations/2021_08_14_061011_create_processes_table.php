@@ -18,8 +18,8 @@ class CreateProcessesTable extends Migration
             $table->unsignedBigInteger('recipe_id');
             $table->integer('process_num');
             $table->string('action');
-            $table->string('memo');
-            $table->string('image');
+            $table->string('memo')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

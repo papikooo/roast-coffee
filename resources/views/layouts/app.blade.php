@@ -73,7 +73,14 @@
         </nav>
 
         <main class="py-4">
-            @yield('content')
+            <div class="row">
+                <div class="col-md-9 col-sm-12">
+                    @yield('content')
+                </div>
+                <div class="col-md-3 col-sm-12">
+                    @include('layouts.sidebar')
+                </div>
+            </div>
         </main>
     </div>
 </body>

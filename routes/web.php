@@ -33,7 +33,7 @@ Route::post('/profile/update/{id}', "ProfileController@update");
 //レシピ
 Route::get('/recipe', "RecipeController@index");
 Route::get('/recipe/create', "RecipeController@create");
-Route::post('/recipe/create/ok', "RecipeController@ok");
+Route::post('/recipe/store', "RecipeController@store");
 Route::get('/recipe/detail/{id}', "RecipeController@detail");
 Route::get('/recipe/edit/{id}', "RecipeController@edit");
 Route::post('/recipe/update/{id}', "RecipeController@update");
