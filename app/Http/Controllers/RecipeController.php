@@ -81,9 +81,10 @@ class RecipeController extends Controller
         $recipe = Recipe::where('recipe_id','=',$recipe_id)->first();
         $user_id = $recipe->user_id;
         $user =  User::where('id','=', $user_id)->first();
+        dd($recipe);
         // $bean = Bean::where('recipe_id','=', $recipe_id)->first();
         // $tool = Tool::where('recipe_id','=', $recipe_id)->first();
         
-        return view('profile/index', compact('recipe','user'));
+        return view("/recipe/detail/$recipe_id", compact('recipe','user'));
     }
 }
