@@ -42,49 +42,48 @@ class RecipeController extends Controller
         $recipe_id = $recipe->id;
         
         //豆
-        foreach($request->beans as $value){
+        foreach($request->beans as $value1){
             $bean = new Bean();
             $bean->recipe_id = $recipe_id;
-            $bean->name = $value;
+            $bean->name = $value1;
             $bean->save();
         }
         
         //道具
-        foreach($request->tools as $value){
+        foreach($request->tools as $value2){
             $tool = new Tool();
             $tool->recipe_id = $recipe_id;
-            $tool->name = $value;
+            $tool->name = $value2;
             $tool->save();
         }
         
         //手順
-        
-        
+        //$request配列から空文字を削除　array_diffで比較、""が無い配列を返し$processesを上書き
+        $processes = $request->processes;
+        $processes = array_diff($processes, array(""));
+        $processes = array_values($processes);
         $process_num = 0;
-        $pro_1 = $request->pro_1;
-        $pro_2 = $request->pro_2;
-        $pro_3 = $request->pro_3;
-        $pro_4 = $request->pro_4;
-        $pro_5 = $request->pro_5;
+       
+        foreach($processes as $value3){
+            $process = new Process();
+            $process->recipe_id = $recipe_id;
+            $process->process_num = $process_num + 1;
+            $process->action = $value3;
+            // $process->memo = $memo;
+            $process->save();
+        }
         
-        $process = new Process();
+        return redirect("/recipe/detail/$recipe_id", compact('recipe_id'));
         
-        $process->recipe_id = $recipe_id;
-        $process->process_num = $process_num + 1;
-        $process->action = $pro_1;
-        // $process->memo = $memo;
-        // $process->image = $image;
-        $process->save();
+    }
+    
+    public function detail($recipe_id) {
+        $recipe = Recipe::where('recipe_id','=',$recipe_id)->first();
+        $user_id = $recipe->user_id;
+        $user =  User::where('id','=', $user_id)->first();
+        // $bean = Bean::where('recipe_id','=', $recipe_id)->first();
+        // $tool = Tool::where('recipe_id','=', $recipe_id)->first();
         
-        // foreach($request->processes as $value){
-        //     $process = new Process();
-        //     $process->recipe_id = $recipe_id;
-        //     $process->process_num = $process_num + 1;
-        //     $process->action = $value;
-        //     dd($value);
-        //     $process->save();
-        // }
-        
-        return redirect('/recipe/create');
+        return view('profile/index', compact('recipe','user'));
     }
 }

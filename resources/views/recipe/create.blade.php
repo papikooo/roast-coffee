@@ -70,23 +70,23 @@
             <h3>作り方</h3>
             <div class="form-group">
                 <label for="name">手順1</label>
-                <input type="text" class="form-control" name="pro_1" id="pro_1">
+                <input type="text" class="form-control" name="processes[0]" id="processes[0]">
             </div>
             <div class="form-group">
                 <label for="name">手順2</label>
-                <input type="text" class="form-control" name="pro_2" id="pro_2">
+                <input type="text" class="form-control" name="processes[1]" id="processes[1]">
             </div>
             <div class="form-group">
                 <label for="name">手順3</label>
-                <input type="text" class="form-control" name="pro_3" id="pro_3">
+                <input type="text" class="form-control" name="processes[2]" id="processes[2]">
             </div>
             <div class="form-group">
                 <label for="name">手順4</label>
-                <input type="text" class="form-control" name="pro_4" id="pro_4">
+                <input type="text" class="form-control" name="processes[3]" id="processes[3]">
             </div>
             <div class="form-group">
                 <label for="name">手順5</label>
-                <input type="text" class="form-control" name="pro_5" id="pro_5">
+                <input type="text" class="form-control" name="processes[4]" id="processes[4]">
             </div>
         </div>
         <input type="submit" value="登録する" class="btn btn-primary">
