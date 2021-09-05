@@ -21,6 +21,11 @@ class RecipeController extends Controller
     }
     
     public function store(Request $request) {
+        // $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'email' =>['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
+        //     'introduction' => 'max:500'
+        // ]);
         
         //レシピ登録
         $user_id = auth()->id();
@@ -42,7 +47,9 @@ class RecipeController extends Controller
         $recipe_id = $recipe->id;
         
         //豆
-        foreach($request->beans as $value1){
+        $beans = isset($request->beans) ? $request->beans : [];
+            
+        foreach($beans as $value1){
             $bean = new Bean();
             $bean->recipe_id = $recipe_id;
             $bean->name = $value1;
@@ -50,7 +57,9 @@ class RecipeController extends Controller
         }
         
         //道具
-        foreach($request->tools as $value2){
+        $tools = isset($request->tools) ? $request->tools : [];
+        
+        foreach($tools as $value2){
             $tool = new Tool();
             $tool->recipe_id = $recipe_id;
             $tool->name = $value2;
@@ -65,26 +74,29 @@ class RecipeController extends Controller
         $process_num = 0;
        
         foreach($processes as $value3){
+            $process_num++;
             $process = new Process();
             $process->recipe_id = $recipe_id;
-            $process->process_num = $process_num + 1;
+            $process->process_num = $process_num;
             $process->action = $value3;
             // $process->memo = $memo;
             $process->save();
         }
         
-        return redirect("/recipe/detail/$recipe_id", compact('recipe_id'));
+        return redirect("/recipe/detail/$recipe_id");
         
     }
     
     public function detail($recipe_id) {
-        $recipe = Recipe::where('recipe_id','=',$recipe_id)->first();
-        $user_id = $recipe->user_id;
-        $user =  User::where('id','=', $user_id)->first();
-        dd($recipe);
-        // $bean = Bean::where('recipe_id','=', $recipe_id)->first();
-        // $tool = Tool::where('recipe_id','=', $recipe_id)->first();
+        $recipe = Recipe::select('recipes.*', 'users.name as user_name', 'profiles.image as user_image')
+            ->join('users', 'users.id', '=', 'recipes.user_id')
+            ->join('profiles', 'profiles.user_id', '=', 'recipes.user_id')
+            ->where('recipes.id', '=', $recipe_id)->first();
+        $beans = Bean::where('recipe_id', '=', $recipe_id)->get();
+        $tools = Tool::where('recipe_id', '=', $recipe_id)->get();
+        $processes = Process::where('recipe_id', '=', $recipe_id)
+            ->orderBy('process_num', 'asc')->get();
         
-        return view("/recipe/detail/$recipe_id", compact('recipe','user'));
+        return view("/recipe/detail", compact('recipe', 'beans', 'tools', 'processes'));
     }
 }
