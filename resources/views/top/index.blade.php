@@ -3,16 +3,16 @@
 @section('content')
 <div class="container">
     <div>
-        <h1>Roast Coffee</h1>
+        <h1 class="title">Roast Coffee</h1>
     </div>
     <div>
         <img src="/images/coffee-top.jpg" height="auto" width="100%"/>
     </div>
     <div>
-        <h2>新着レシピ</h2>
+        <h2 class="middle-title">新着レシピ</h2>
     </div>
     <div>
-        <h2>レシピを探す</h2>
+        <h2 class="middle-title">レシピを探す</h2>
     </div>
 </div>
 @endsection

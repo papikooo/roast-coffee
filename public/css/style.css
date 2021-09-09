@@ -1,0 +1,56 @@
+.body {
+    background-color: #faf0e6;
+    font-family: 'Shippori Mincho B1', serif;
+}
+
+.footer {
+    padding: 4px;
+    background-color: #cca37a;
+    text-align: center;
+}
+
+/*-------文字-------*/
+/*.top-title {*/
+/*    font-family: 'Glory', sans-serif;*/
+/*}*/
+
+.title {
+    color: #99642f;
+    font-weight: bold;
+}
+
+.middle-title {
+    color: #664320;
+    font-weight: bold;
+}
+
+.card-title {
+    color: #332110;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.normal-font {
+    font-size: 16px;
+}
+
+/*-------枠線-------*/
+
+.ori-border {
+    background: #ffffff;
+    border: solid 2px #664320;/*線*/
+    border-radius: 8px;/*角の丸み*/
+}
+
+.sidebar {
+    border: solid 2px #664320;/*線*/
+    border-radius: 8px;/*角の丸み*/
+    font-weight: bold;
+    text-align: center;
+}
+
+.side-back {
+    font-size: 20px;
+    color: #332110;
+    background: #fffafa;
+}

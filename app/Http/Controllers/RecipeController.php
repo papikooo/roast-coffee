@@ -88,6 +88,7 @@ class RecipeController extends Controller
     }
     
     public function detail($recipe_id) {
+        //join でrecipeテーブルにusers,profilesテーブルの必要なカラムを結合
         $recipe = Recipe::select('recipes.*', 'users.name as user_name', 'profiles.image as user_image')
             ->join('users', 'users.id', '=', 'recipes.user_id')
             ->join('profiles', 'profiles.user_id', '=', 'recipes.user_id')
@@ -95,7 +96,7 @@ class RecipeController extends Controller
         $beans = Bean::where('recipe_id', '=', $recipe_id)->get();
         $tools = Tool::where('recipe_id', '=', $recipe_id)->get();
         $processes = Process::where('recipe_id', '=', $recipe_id)
-            ->orderBy('process_num', 'asc')->get();
+            ->orderBy('process_num', 'asc')->get(); //昇順並びに
         
         return view("/recipe/detail", compact('recipe', 'beans', 'tools', 'processes'));
     }
