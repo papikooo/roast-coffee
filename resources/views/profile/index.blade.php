@@ -16,7 +16,7 @@
         {{$profile->introduction}}</h3>
     </div>
     <a href="/profile/edit/{{$user->id}}">
-        <input type="submit" value="編集する" class="btn btn-primary">
+        <input type="submit" value="編集する" class="btn btn-secondary">
     </a>
 </div>
 @endsection

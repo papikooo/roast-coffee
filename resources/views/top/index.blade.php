@@ -8,7 +8,7 @@
     <div>
         <img src="/images/coffee-top.jpg" height="auto" width="100%"/>
     </div>
-    <div>
+    <div class="pt-4">
         <h2 class="middle-title">新着レシピ</h2>
     </div>
     <div>

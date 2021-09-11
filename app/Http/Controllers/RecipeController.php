@@ -16,6 +16,11 @@ class RecipeController extends Controller
         return view('recipe/index', compact('recipes'));
     }
     
+    // public function search() {
+        
+    //     return view('recipe/result', compact('recipes'));
+    // }
+    
     public function create() {
         return view('recipe/create');
     }

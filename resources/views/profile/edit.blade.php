@@ -28,7 +28,7 @@
             <label for="introduction">自己紹介</label>
             <input type="text" class="form-control" id="introduction" name="introduction" value={{$profile->introduction}}>
         </div>
-        <input type="submit" value="登録する" class="btn btn-primary">
+        <input type="submit" value="登録する" class="btn btn-secondary">
     </form>
 </div>
 @endsection
