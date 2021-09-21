@@ -28,6 +28,7 @@
     color: #332110;
     font-weight: bold;
     font-size: 18px;
+    background-color: #faf0e6;
 }
 
 .normal-font {
@@ -54,3 +55,7 @@
     color: #332110;
     background: #fffafa;
 }
+
+.custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
+        background-color:#664320;
+    }

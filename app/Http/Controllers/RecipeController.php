@@ -10,9 +10,29 @@ use App\Process;
 
 class RecipeController extends Controller
 {
-    public function index() {
+    //豆と道具の検索方法・・・
+    public function index(Request $request) {
+        $recipes = Recipe::select('recipes.*', 'beans.name as bean_name', 'tools.name as tool_name')
+            ->join('beans', 'beans.recipe_id', '=', 'recipes.id')
+            ->join('tools', 'tools.recipe_id', '=', 'recipes.id')
+            ->get();
+            
         $user = auth()->user();
-        $recipes = Recipe::get();
+        $keyword = $request->keyword;
+    
+        $query = Recipe::query();
+    
+        if(!empty($keyword)){
+            $query->where('name','like','%'.$keyword.'%')
+                ->orWhere('introduction','like','%'.$keyword.'%')
+                ->orWhere('time','like','%'.$keyword.'%')
+                ->orWhere('bean_name','like','%'.$keyword.'%')
+                ->orWhere('tool_name','like','%'.$keyword.'%');
+        }
+ 
+        #ページネーション
+        $recipes = $query->orderBy('created_at','desc')->paginate(10);
+        
         return view('recipe/index', compact('recipes'));
     }
     
