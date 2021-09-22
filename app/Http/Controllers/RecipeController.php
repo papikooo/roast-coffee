@@ -10,30 +10,47 @@ use App\Process;
 
 class RecipeController extends Controller
 {
-    //豆と道具の検索方法・・・
+    //空白が全角、半角の両方の場合でも対処できるように
     public function index(Request $request) {
-        $recipes = Recipe::select('recipes.*', 'beans.name as bean_name', 'tools.name as tool_name')
-            ->join('beans', 'beans.recipe_id', '=', 'recipes.id')
-            ->join('tools', 'tools.recipe_id', '=', 'recipes.id')
-            ->get();
-            
         $user = auth()->user();
-        $keyword = $request->keyword;
-    
-        $query = Recipe::query();
-    
-        if(!empty($keyword)){
-            $query->where('name','like','%'.$keyword.'%')
-                ->orWhere('introduction','like','%'.$keyword.'%')
-                ->orWhere('time','like','%'.$keyword.'%')
-                ->orWhere('bean_name','like','%'.$keyword.'%')
-                ->orWhere('tool_name','like','%'.$keyword.'%');
-        }
- 
-        #ページネーション
-        $recipes = $query->orderBy('created_at','desc')->paginate(10);
+        $keywords = $request->keyword;
         
-        return view('recipe/index', compact('recipes'));
+        $query = Recipe::query();
+        $query->select('recipes.id')
+                ->leftJoin('beans', 'recipes.id', '=', 'beans.recipe_id')
+                ->leftJoin('tools', 'recipes.id', '=', 'tools.recipe_id');
+    
+        if(!empty($keywords)){
+            $keywords = trim($keywords);
+            $keywords = explode("　", $keywords);
+                foreach($keywords as $keyword){
+                    $query->orWhere('recipes.name','like','%'.$keyword.'%')
+                    ->orWhere('recipes.introduction','like','%'.$keyword.'%')
+                    ->orWhere('recipes.time','like','%'.$keyword.'%')
+                    ->orWhere('beans.name','=', $keyword )
+                    ->orWhere('tools.name','=', $keyword );
+            }
+        }
+        
+        $query->groupBy('recipes.id');
+ 
+        $recipes = $query->orderBy('recipes.created_at','desc')->paginate(10);
+        $recipe_details = Recipe::whereIn('id', $recipes->modelKeys())->get();
+        $recipe_beans = Bean::whereIn('recipe_id', $recipes->modelKeys())->get();
+        
+        foreach($recipes as $recipe){
+            $recipe->detail = $recipe_details->find($recipe->id);
+            $recipe->beans = $recipe_beans->filter(function($bean, $key)use($recipe) {
+                return $bean->recipe_id == $recipe->id;
+            });
+        }
+        
+        //検索ワード無しの場合　arrayにしておかないとエラーになるので[]
+        if(empty($keywords)){
+            $keywords[] = "なし";
+        }
+        
+        return view('recipe/index', compact('recipes','keywords'));
     }
     
     // public function search() {
