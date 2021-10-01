@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Storage;
 use App\User;
 use App\Profile;
 use Illuminate\Validation\Rule;
@@ -33,6 +34,10 @@ class ProfileController extends Controller
             'introduction' => 'max:500'
         ]);
         
+        $image = $request->file('image');
+        $path = Storage::disk('s3')->putFile('profile', $image, 'public');
+        $profile_image = Storage::disk('s3')->url($path);
+        
         $name = $request->name;
         $email = $request->email;
         $introduction = $request->introduction;
@@ -43,6 +48,7 @@ class ProfileController extends Controller
         $user->name = $name;
         $user->email = $email;
         $profile->introduction = $introduction;
+        $profile->image =$profile_image;
         $user->save();
         $profile->save();
         

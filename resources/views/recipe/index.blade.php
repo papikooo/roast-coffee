@@ -9,7 +9,7 @@
             <div>
                 <div class="form-group">
                     <label for="name">キーワード検索</label>
-                    <input type="text" class="form-control" name="keyword" id="keyword">
+                    <input type="text" class="form-control" name="keyword" id="keyword" value="{{isset($keywords) ? implode(" ", $keywords) : ""}}">
                 </div>
                 <div class="text-center">
                     <input type="submit" value="検索する" class="btn btn-primary">
@@ -17,12 +17,11 @@
             </div>
         </div>
     </form>
-    <div class="pl-4 pt-5 row">
-        <p class="middle-title normal-font">検索ワード：</p>
-            @foreach($keywords as $keyword)
-                <p class="middle-title normal-font">{{$keyword}}&emsp;</p>
-            @endforeach
+    @isset($keywords)
+    <div class="pt-5">
+        <p class="middle-title normal-font">検索ワード：{{implode("　", $keywords)}}</p>
     </div>
+    @endisset
     <div class="pt-2 row">
         @foreach($recipes as $recipe)
         <div class="p-2">

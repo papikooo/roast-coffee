@@ -14,13 +14,16 @@
     </div> 
     @endif
     
-    <form action="/profile/update/{{$user->id}}" method="post">
+    <form action="/profile/update/{{$user->id}}" method="post" enctype="multipart/form-data">
         @csrf
-        <div class="form-group">
+        <div class="pb-1 form-group">
             <label for="name">ユーザー名</label>
             <input type="text" class="form-control" id="name" name="name" value={{$user->name}}>
         </div>
-        <div class="form-group">
+        <div>
+            <input type="file" name="image">
+        </div>
+        <div class="pt-3 form-group">
             <label for="email">メールアドレス</label>
             <input type="text" class="form-control" id="email" name="email" value={{$user->email}}>
         </div>
@@ -28,7 +31,9 @@
             <label for="introduction">自己紹介</label>
             <input type="text" class="form-control" id="introduction" name="introduction" value={{$profile->introduction}}>
         </div>
-        <input type="submit" value="登録する" class="btn btn-secondary">
+        <div class="pt-2">
+            <input type="submit" value="登録する" class="btn btn-primary">
+        </div>
     </form>
 </div>
 @endsection

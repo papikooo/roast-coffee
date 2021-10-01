@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Storage;
 use App\Recipe;
 use App\Bean;
 use App\Tool;
@@ -22,13 +23,14 @@ class RecipeController extends Controller
     
         if(!empty($keywords)){
             $keywords = trim($keywords);
-            $keywords = explode("　", $keywords);
-                foreach($keywords as $keyword){
-                    $query->orWhere('recipes.name','like','%'.$keyword.'%')
-                    ->orWhere('recipes.introduction','like','%'.$keyword.'%')
-                    ->orWhere('recipes.time','like','%'.$keyword.'%')
-                    ->orWhere('beans.name','=', $keyword )
-                    ->orWhere('tools.name','=', $keyword );
+            $keywords = str_replace("　", " ", $keywords);
+            $keywords = explode(" ", $keywords);
+            foreach($keywords as $keyword){
+                $query->orWhere('recipes.name','like','%'.$keyword.'%')
+                ->orWhere('recipes.introduction','like','%'.$keyword.'%')
+                ->orWhere('recipes.time','like','%'.$keyword.'%')
+                ->orWhere('beans.name','=', $keyword )
+                ->orWhere('tools.name','=', $keyword );
             }
         }
         
@@ -43,11 +45,6 @@ class RecipeController extends Controller
             $recipe->beans = $recipe_beans->filter(function($bean, $key)use($recipe) {
                 return $bean->recipe_id == $recipe->id;
             });
-        }
-        
-        //検索ワード無しの場合　arrayにしておかないとエラーになるので[]
-        if(empty($keywords)){
-            $keywords[] = "なし";
         }
         
         return view('recipe/index', compact('recipes','keywords'));
@@ -69,12 +66,22 @@ class RecipeController extends Controller
         //     'introduction' => 'max:500'
         // ]);
         
+        //画像
+        $image = $request->file('image');
+        $path = Storage::disk('s3')->putFile('recipe', $image, 'public');
+        $thumbnail = Storage::disk('s3')->url($path);
+        
         //レシピ登録
         $user_id = auth()->id();
         $name = $request->name;
         $introduction = $request->introduction;
         $time = $request->time;
-        $public_status = 1;
+        $public_status = $request->public_status;
+        if($public_status == 2){
+            $public_status = 2;
+            }else{
+                $public_status = 1;
+                }
         
         $recipe = new Recipe();
         
@@ -82,7 +89,7 @@ class RecipeController extends Controller
         $recipe->name = $name;
         $recipe->introduction = $introduction;
         $recipe->time = $time;
-        // $recipe->thumbnail = $thumbnail;
+        $recipe->thumbnail = $thumbnail;
         $recipe->public_status = $public_status;
         $recipe->save();
         
@@ -114,16 +121,21 @@ class RecipeController extends Controller
         $processes = array_diff($processes, array(""));
         $processes = array_values($processes);
         $process_num = 0;
-       
+        $memo_num = 0;
+        
+        $memo = $request->memos;
+        
         foreach($processes as $value3){
             $process_num++;
             $process = new Process();
             $process->recipe_id = $recipe_id;
             $process->process_num = $process_num;
             $process->action = $value3;
-            // $process->memo = $memo;
+            $process->memo = $memo[$memo_num];
             $process->save();
+            $memo_num++;
         }
+        
         
         return redirect("/recipe/detail/$recipe_id");
         

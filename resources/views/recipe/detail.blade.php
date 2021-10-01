@@ -7,9 +7,9 @@
         <div class="col-md-6">
             <h2 class="title">{{$recipe->name}}</h2>
         </div>
-        <div class="col-md-6 row">
+        <div class="col-md-6 d-flex align-items-center">
             <div class="col-md-2">
-                <h5>写真</h5>
+                <img src="{{ $recipe->user_image }}" class="w-100">
             </div>
             <div class="col-md-10">
                 <h5>{{$recipe->user_name}}さん</h5>
@@ -19,7 +19,7 @@
     <div class="pt-4 row">
         <div class="col-md-5">
             <div>
-                <h2>写真</h2>
+                <img src="{{ $recipe->thumbnail }}" class="w-100">
             </div>
                 <div class="pl-3 pt-3 ori-border">
                     <h4 class="middle-title">レシピ紹介</h4>
@@ -56,7 +56,7 @@
                     <p class="card-title">{{$process->process_num}}. {{$process->action}}</p>
                 </div>
                 <div class="card-body">
-                    <p class="card-text normal-font">メモ欄</p>
+                    <p class="card-text normal-font">{{$process->memo}}</p>
                 </div>
             </div>
         </div>
