@@ -16,6 +16,11 @@
             </div>
         </div>
     </div>
+    @if(auth()->id() === $recipe->user_id)
+        <div>
+            編集
+        </div>
+    @endif
     <div class="pt-4 row">
         <div class="col-md-5">
             <div>

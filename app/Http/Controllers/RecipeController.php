@@ -19,7 +19,8 @@ class RecipeController extends Controller
         $query = Recipe::query();
         $query->select('recipes.id')
                 ->leftJoin('beans', 'recipes.id', '=', 'beans.recipe_id')
-                ->leftJoin('tools', 'recipes.id', '=', 'tools.recipe_id');
+                ->leftJoin('tools', 'recipes.id', '=', 'tools.recipe_id')
+                ->where('recipes.public_status', '=', 1);
     
         if(!empty($keywords)){
             $keywords = trim($keywords);
@@ -68,8 +69,11 @@ class RecipeController extends Controller
         
         //画像
         $image = $request->file('image');
-        $path = Storage::disk('s3')->putFile('recipe', $image, 'public');
-        $thumbnail = Storage::disk('s3')->url($path);
+        $thumbnail = null;
+        if(isset($image)){
+            $path = Storage::disk('s3')->putFile('recipe', $image, 'public');
+            $thumbnail = Storage::disk('s3')->url($path);
+        }
         
         //レシピ登録
         $user_id = auth()->id();
@@ -98,20 +102,20 @@ class RecipeController extends Controller
         //豆
         $beans = isset($request->beans) ? $request->beans : [];
             
-        foreach($beans as $value1){
+        foreach($beans as $value){
             $bean = new Bean();
             $bean->recipe_id = $recipe_id;
-            $bean->name = $value1;
+            $bean->name = $value;
             $bean->save();
         }
         
         //道具
         $tools = isset($request->tools) ? $request->tools : [];
         
-        foreach($tools as $value2){
+        foreach($tools as $value){
             $tool = new Tool();
             $tool->recipe_id = $recipe_id;
-            $tool->name = $value2;
+            $tool->name = $value;
             $tool->save();
         }
         
@@ -121,19 +125,17 @@ class RecipeController extends Controller
         $processes = array_diff($processes, array(""));
         $processes = array_values($processes);
         $process_num = 0;
-        $memo_num = 0;
         
         $memo = $request->memos;
         
-        foreach($processes as $value3){
+        foreach($processes as $key => $value){
             $process_num++;
             $process = new Process();
             $process->recipe_id = $recipe_id;
             $process->process_num = $process_num;
-            $process->action = $value3;
-            $process->memo = $memo[$memo_num];
+            $process->action = $value;
+            $process->memo = $memo[$key];
             $process->save();
-            $memo_num++;
         }
         
         
@@ -152,6 +154,9 @@ class RecipeController extends Controller
         $processes = Process::where('recipe_id', '=', $recipe_id)
             ->orderBy('process_num', 'asc')->get(); //昇順並びに
         
+        if($recipe->public_status == 2 && auth()->id() != $recipe->user_id){
+            abort(404);    
+        }
         return view("/recipe/detail", compact('recipe', 'beans', 'tools', 'processes'));
     }
 }

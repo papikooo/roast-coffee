@@ -83,53 +83,26 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-7">
-                    <h5 class="pt-3 middle-title">作り方</h5>
-                    <div class="form-group">
-                        <label for="name">手順1</label>
-                        <input type="text" class="form-control" name="processes[0]" id="processes[0]">
+            <div id="add">
+                <div class="row">
+                    <div class="col-7">
+                        <h5 class="pt-3 middle-title">作り方</h5>
+                        <div class="form-group">
+                            <label for="name">手順1</label>
+                            <input type="text" class="form-control" name="processes[0]" id="processes[0]">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="name">手順2</label>
-                        <input type="text" class="form-control" name="processes[1]" id="processes[1]">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">手順3</label>
-                        <input type="text" class="form-control" name="processes[2]" id="processes[2]">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">手順4</label>
-                        <input type="text" class="form-control" name="processes[3]" id="processes[3]">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">手順5</label>
-                        <input type="text" class="form-control" name="processes[4]" id="processes[4]">
+                    <div class="col-5">
+                        <h5 class="pt-3 middle-title">memo</h5>
+                        <div class="form-group">
+                            <label for="name">メモ</label>
+                            <input type="text" class="form-control" name="memos[0]" id="memos[0]">
+                        </div>
                     </div>
                 </div>
-                <div class="col-5">
-                    <h5 class="pt-3 middle-title">memo</h5>
-                    <div class="form-group">
-                        <label for="name">メモ</label>
-                        <input type="text" class="form-control" name="memos[0]" id="memos[0]">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">メモ</label>
-                        <input type="text" class="form-control" name="memos[1]" id="memos[1]">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">メモ</label>
-                        <input type="text" class="form-control" name="memos[2]" id="memos[2]">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">メモ</label>
-                        <input type="text" class="form-control" name="memos[3]" id="memos[3]">
-                    </div>
-                    <div class="form-group">
-                        <label for="name">メモ</label>
-                        <input type="text" class="form-control" name="memos[4]" id="memos[4]">
-                    </div>
-                </div>
+            </div>
+            <div class="pt-2">
+                <button type="button" class="btn btn-primary" onclick="addProcess()">+</button>
             </div>
             <div class="pt-3">
                 <div class="custom-control custom-checkbox">
@@ -143,4 +116,29 @@
         </div>
     </form>
 </div>
+<script>
+    var process_num = 1;
+    function addProcess(){
+        let textbox_element = document.getElementById('add');
+        var new_element = document.createElement('div');
+        new_element.innerHTML = `
+        <div class="row">
+            <div class="col-7">
+                <div class="form-group">
+                    <label for="name">手順${process_num + 1}</label>
+                    <input type="text" class="form-control" name="processes[${process_num}]" id="processes[${process_num}]">
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="form-group">
+                    <label for="name">メモ</label>
+                    <input type="text" class="form-control" name="memos[${process_num}]" id="memos[${process_num}]">
+                </div>
+            </div>
+        </div>
+        `;
+        textbox_element.appendChild(new_element);
+        process_num++;
+    }
+</script>
 @endsection
