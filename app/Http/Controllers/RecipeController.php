@@ -11,7 +11,6 @@ use App\Process;
 
 class RecipeController extends Controller
 {
-    //空白が全角、半角の両方の場合でも対処できるように
     public function index(Request $request) {
         $user = auth()->user();
         $keywords = $request->keyword;
@@ -158,5 +157,93 @@ class RecipeController extends Controller
             abort(404);    
         }
         return view("/recipe/detail", compact('recipe', 'beans', 'tools', 'processes'));
+    }
+    
+    public function edit($recipe_id) {
+        $recipe = Recipe::where('recipes.id', "=", $recipe_id)->first();
+        $beans = Bean::where('recipe_id', '=', $recipe_id)->get();
+        $tools = Tool::where('recipe_id', '=', $recipe_id)->get();
+        $processes = Process::where('recipe_id', '=', $recipe_id)
+            ->orderBy('process_num', 'asc')->get();
+
+        return view('recipe/edit', compact('recipe', 'beans', 'tools', 'processes'));
+    }
+    
+    public function update(Request $request, $recipe_id) {
+        //レシピ登録
+        $user_id = auth()->id();
+        $name = $request->name;
+        $introduction = $request->introduction;
+        $time = $request->time;
+        $public_status = $request->public_status;
+        if($public_status == 2){
+            $public_status = 2;
+        }else{
+            $public_status = 1;
+        }
+        
+        $recipe = Recipe::where('recipes.id', "=", $recipe_id)->first();
+        
+        $image = $request->file('image');
+        $thumbnail = null;
+        if(isset($image)){
+            $path = Storage::disk('s3')->putFile('recipe', $image, 'public');
+            $thumbnail = Storage::disk('s3')->url($path);
+            $recipe->thumbnail = $thumbnail;
+        }
+        
+        $recipe->name = $name;
+        $recipe->introduction = $introduction;
+        $recipe->time = $time;
+        $recipe->public_status = $public_status;
+        $recipe->save();
+        
+        $recipe_id = $recipe->id;
+        
+        //豆
+        $beans = isset($request->beans) ? $request->beans : [];
+        Bean::where('recipe_id', '=', $recipe_id)->delete();
+            
+        foreach($beans as $value){
+            $bean = new Bean();
+            $bean->recipe_id = $recipe_id;
+            $bean->name = $value;
+            $bean->save();
+        }
+        
+        //道具
+        $tools = isset($request->tools) ? $request->tools : [];
+        Tool::where('recipe_id', '=', $recipe_id)->delete();
+        
+        foreach($tools as $value){
+            $tool = new Tool();
+            $tool->recipe_id = $recipe_id;
+            $tool->name = $value;
+            $tool->save();
+        }
+        
+        //手順
+        //$request配列から空文字を削除　array_diffで比較、""が無い配列を返し$processesを上書き
+        Process::where('recipe_id', '=', $recipe_id)->delete();
+            
+        $processes = $request->processes;
+        $processes = array_diff($processes, array(""));
+        $processes = array_values($processes);
+        $process_num = 0;
+        
+        
+        $memo = $request->memos;
+        
+        foreach($processes as $key => $value){
+            $process_num++;
+            $process = new Process();
+            $process->recipe_id = $recipe_id;
+            $process->process_num = $process_num;
+            $process->action = $value;
+            $process->memo = $memo[$key];
+            $process->save();
+        }
+        
+        return redirect("/recipe/detail/$recipe_id");
     }
 }

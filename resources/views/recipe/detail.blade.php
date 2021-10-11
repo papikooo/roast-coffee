@@ -18,7 +18,7 @@
     </div>
     @if(auth()->id() === $recipe->user_id)
         <div>
-            編集
+            <a href="/recipe/edit/{{$recipe->id}}" class="btn btn-primary">編集</a>
         </div>
     @endif
     <div class="pt-4 row">
