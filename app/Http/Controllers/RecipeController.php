@@ -11,6 +11,7 @@ use App\Process;
 use App\Favorite;
 use App\Report;
 use App\RecipeHistory;
+use Illuminate\Support\Facades\DB;
 
 class RecipeController extends Controller
 {
@@ -18,26 +19,35 @@ class RecipeController extends Controller
         $user = auth()->user();
         $keywords = $request->keyword;
         
-        $query = Recipe::query();
-        $query->select('recipes.id')
+        $subquery = Recipe::query();
+        $subquery->select('recipes.id as recipe_id', 
+                DB::raw('group_concat(beans.name) as beans_name'), 
+                DB::raw('group_concat(tools.name) as tools_name'))
                 ->leftJoin('beans', 'recipes.id', '=', 'beans.recipe_id')
                 ->leftJoin('tools', 'recipes.id', '=', 'tools.recipe_id')
                 ->where('recipes.public_status', '=', 1);
-    
+        $subquery->groupBy('recipes.id');
+        
+        $query = Recipe::joinSub($subquery, 'table1', function($join){
+            $join->on('recipes.id', '=', 'table1.recipe_id');
+        });
+        
         if(!empty($keywords)){
             $keywords = trim($keywords);
             $keywords = str_replace("　", " ", $keywords);
             $keywords = explode(" ", $keywords);
             foreach($keywords as $keyword){
-                $query->orWhere('recipes.name','like','%'.$keyword.'%')
-                ->orWhere('recipes.introduction','like','%'.$keyword.'%')
-                ->orWhere('recipes.time','like','%'.$keyword.'%')
-                ->orWhere('beans.name','=', $keyword )
-                ->orWhere('tools.name','=', $keyword );
+                $query->where(function($query) use($keyword){
+                    $query->where('recipes.name','like','%'.$keyword.'%')
+                    ->orWhere('recipes.introduction','like','%'.$keyword.'%')
+                    ->orWhere('recipes.time','like','%'.$keyword.'%')
+                    ->orWhere('beans_name','like', '%'.$keyword.'%')
+                    ->orWhere('tools_name','like', '%'.$keyword.'%');
+                });
             }
         }
         
-        $query->groupBy('recipes.id');
+        
  
         $recipes = $query->orderBy('recipes.created_at','desc')->paginate(10);
         $recipe_details = Recipe::whereIn('id', $recipes->modelKeys())->get();
