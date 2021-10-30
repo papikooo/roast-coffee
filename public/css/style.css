@@ -62,4 +62,16 @@
 
 .custom-checkbox .custom-control-input:checked ~ .custom-control-label::before {
         background-color:#664320;
-    }
+}
+    
+/*色を茶色に*/
+.blown {
+    color: #664320;
+}
+
+/*ライン*/
+hr {
+   border-width: 3px 0px 0px 0px; /* 太さ */
+   border-style: solid; /* 線種 */
+   border-color: #664320;   /* 線色 */
+}

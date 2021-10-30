@@ -8,6 +8,9 @@ use App\Recipe;
 use App\Bean;
 use App\Tool;
 use App\Process;
+use App\Favorite;
+use App\Report;
+use App\RecipeHistory;
 
 class RecipeController extends Controller
 {
@@ -143,6 +146,14 @@ class RecipeController extends Controller
     }
     
     public function detail($recipe_id) {
+        $user_id = auth()->id();
+        RecipeHistory::where('recipe_id', '=', $recipe_id)
+            ->where('user_id', '=', $user_id)->delete();
+        $history = new RecipeHistory();
+        $history->user_id = $user_id;
+        $history->recipe_id = $recipe_id;
+        $history->save();
+        
         //join でrecipeテーブルにusers,profilesテーブルの必要なカラムを結合
         $recipe = Recipe::select('recipes.*', 'users.name as user_name', 'profiles.image as user_image')
             ->join('users', 'users.id', '=', 'recipes.user_id')
@@ -152,11 +163,16 @@ class RecipeController extends Controller
         $tools = Tool::where('recipe_id', '=', $recipe_id)->get();
         $processes = Process::where('recipe_id', '=', $recipe_id)
             ->orderBy('process_num', 'asc')->get(); //昇順並びに
+        $favorite = Favorite::where('recipe_id', '=', $recipe_id)
+                            ->where('user_id', '=', $user_id)->first();
+        $reports = Report::select('reports.*', 'users.name as user_name')
+            ->join('users', 'users.id', '=', 'reports.user_id')
+            ->where('recipe_id', '=', $recipe_id)->get();
         
         if($recipe->public_status == 2 && auth()->id() != $recipe->user_id){
             abort(404);    
         }
-        return view("/recipe/detail", compact('recipe', 'beans', 'tools', 'processes'));
+        return view("/recipe/detail", compact('recipe', 'beans', 'tools', 'processes', 'favorite', 'reports'));
     }
     
     public function edit($recipe_id) {
@@ -246,4 +262,20 @@ class RecipeController extends Controller
         
         return redirect("/recipe/detail/$recipe_id");
     }
+    
+    //レポート
+    public function report(Request $request, $recipe_id) {
+        $user_id = auth()->id();
+        $comment = $request->comment;
+        
+        $report = new Report();
+        
+        $report->user_id = $user_id;
+        $report->recipe_id = $recipe_id;
+        $report->comment = $comment;
+        $report->save();
+        
+        return redirect("/recipe/detail/$recipe_id");
+    }
+    
 }
